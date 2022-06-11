@@ -1,6 +1,6 @@
 # Welcome to Referral Program!
 
-This is Laravel + React based application, where user can register and login into the system and can refer other user throw their email and on successful referral user get's 1 point.
+This is Laravel + React based application, where user can register and login into the system and can refer other referral through their email and on successful referral referrer get's 1 point.
 
 ***Here is stepes to install the application***
 
