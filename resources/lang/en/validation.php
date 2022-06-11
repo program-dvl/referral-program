@@ -121,6 +121,7 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    'check_max_referral' => 'You can only refer maximum '.config('constants.maximum_referral_limit').' referrals.',
 
     /*
     |--------------------------------------------------------------------------

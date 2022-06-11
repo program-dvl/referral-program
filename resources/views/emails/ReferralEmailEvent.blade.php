@@ -9,5 +9,5 @@ Great for recruiting, sales, and marketing outreach.  <br><br>
   
 It’s an extension that works right on top of LinkedIn.  <br><br>
   
-Here’s their invitation link again:  
+Here’s their invitation link again: <br> 
 {{$referral_link}}

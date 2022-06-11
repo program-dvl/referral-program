@@ -1,13 +1,12 @@
 <?php
 namespace App\Repositories\Referral;
 
+use App\Events\SentReferralEmail;
 use App\Models\ReferralUser;
 use App\Models\User;
 use Carbon\Carbon;
 use Event;
-use App\Events\SentReferralEmail;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 
 class ReferralRepository
 {
@@ -28,8 +27,7 @@ class ReferralRepository
     public function __construct(
         ReferralUser $referralUser,
         User $user
-    )
-    {
+    ) {
         $this->referralUser = $referralUser;
         $this->user = $user;
     }
@@ -44,18 +42,24 @@ class ReferralRepository
      */
     public function send(array $referralUsers, User $refferedBy)
     {
-       $referralData = [];
-       foreach ($referralUsers as $key => $user) {
+        $referralData = [];
+        foreach ($referralUsers as $key => $user) {
             $referralData[] = [
                'referral_email' => $user,
                'referred_by' => $refferedBy->id,
                'created_at' => Carbon::now(),
                'updated_at' => Carbon::now()
             ];
-       }
-       $this->referralUser->insert($referralData);
-       $referralEmails = Arr::pluck($referralData, 'referral_email');
-       Event::dispatch(new SentReferralEmail($referralEmails, $refferedBy->id));
+        }
+        $this->referralUser->insert($referralData);
+        $referralEmails = Arr::pluck($referralData, 'referral_email');
+
+        // Send Email to referrals
+        Event::dispatch(new SentReferralEmail(
+            $referralEmails, 
+            $refferedBy->referral_link, 
+            $refferedBy->name
+        ));
     }
 
     /**
@@ -65,8 +69,8 @@ class ReferralRepository
      * @param int $referralCode
      * @return null
      */
-    public function updateReferralPoint(string $email, string $referralCode) {
-
+    public function updateReferralPoint(string $email, string $referralCode)
+    {
         $user = $this->user->where('referral_token', $referralCode)->first();
 
         $referralUser = $this->referralUser->where(
@@ -80,7 +84,7 @@ class ReferralRepository
 
             // Increment user's referral point
             $user->update(
-               [
+                [
                    'points' => $user->points + 1
                ]
             );
@@ -88,10 +92,20 @@ class ReferralRepository
             // Update user's referral status
             $referralUser->update(
                 [
-                    'status' => 1
+                    'status' => config('constants.referral_status.INVITATION_ACCEPTED')
                 ]
             );
         }
     }
 
+    /**
+     * Get Referrals list
+     *
+     * @return array
+     */
+    public function referralsList(): array
+    {
+        $referrals = $this->referralUser->with(['user'])->get();
+        return (count($referrals)) ? $referrals->toArray() : [];
+    }
 }

@@ -32,9 +32,9 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-     /**
-     * @var App\Repositories\Referral\ReferralRepository
-     */
+    /**
+    * @var App\Repositories\Referral\ReferralRepository
+    */
     private $referralRepository;
 
     /**

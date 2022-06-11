@@ -27,7 +27,7 @@ class SendReferralRequest extends FormRequest
         $user = Auth::user();
         return [
             "emails" => 'array|min:1',
-            "emails.*" => 'email|not_in:'.$user->email.'|unique:users,email',
+            "emails.*" => 'email|not_in:'.$user->email.'|unique:users,email|unique:referral_users,referral_email|check_max_referral:'.$user->id,
         ];
     }
 
@@ -38,7 +38,7 @@ class SendReferralRequest extends FormRequest
             'emails.min' => 'Atleast 1 email is required',
             'emails.*.email' => 'Please use valid email address.',
             'emails.*.not_in' => 'You can not use your email',
-            'emails.*.unique' => 'Email already signed up into the system'
+            'emails.*.unique' => 'Email already signed up into the system or it has been already referred by someone else'
         ];
     }
 }

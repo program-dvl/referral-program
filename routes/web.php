@@ -23,5 +23,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::post('/referral', [App\Http\Controllers\Referral\ReferralController::class, 'index']);
+Route::get('/referral/list', [App\Http\Controllers\Admin\Referral\ReferralController::class, 'index']);
 
 Route::view('/{path?}', 'app')->middleware(['auth']);
+Route::view('admin/referrals', 'app');
