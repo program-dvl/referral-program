@@ -34,15 +34,7 @@ class ReferralController extends Controller
     */
     public function index()
     {
-        try {
-            $list = $this->referralRepository->referralsList();
-        } catch (Throwable $e) {
-            $data = [
-                'message' => trans('message.custom_error_message.REFERRAL_LIST_FAILED'),
-                'code' => Response::HTTP_FORBIDDEN
-            ];
-            return response()->json($data, Response::HTTP_FORBIDDEN, [], JSON_NUMERIC_CHECK);
-        }
+        $list = $this->referralRepository->referralsList();
         $data = [
             'data' => $list,
             'message' => trans('message.success.REFFERAL_LIST_SUCCESS'),
