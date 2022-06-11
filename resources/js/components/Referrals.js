@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ReactMultiEmail, isEmail } from 'react-multi-email';
 import 'react-multi-email/style.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {sendReferral} from "../Services/referral-service";
 import 'react-notifications/lib/notifications.css';
 import $ from 'jquery'; 
 
@@ -23,21 +24,15 @@ class Referrals extends Component {
     this.setState({isDisabled: true});
 
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
-    fetch('/referral', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ 
-        emails: this.state.emails,
-        _token: csrf_token,
-        })
-    }).then((res) => res.json())
+
+    var body = { 
+      emails: this.state.emails,
+      _token: csrf_token,
+    }
+
+    sendReferral(body)
         .then((data) => {
-          this.setState({
-            isDisabled: false
-          });
+          this.setState({isDisabled: false});
           if(data.errors) {
             for (var k in data.errors) {
               NotificationManager.error(data.errors[k][0], data.message);
@@ -45,17 +40,16 @@ class Referrals extends Component {
             }
           } else {
             if (data.code == 200) {
-              this.setState({
-                emails: []
-              });
+              this.setState({emails: []});
               NotificationManager.success(data.message, 'Success!');
             } else {
               NotificationManager.error(data.message, 'Error!');
             }
           }
+
         }
-        )
-        .catch((err) => console.log(err))
+      )
+    .catch((err) => console.log(err))
   }
 
   render () {

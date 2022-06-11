@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Table from 'react-bootstrap/Table'
+import Table from 'react-bootstrap/Table';
+import {referralList} from "../Services/referral-service";
 import 'bootstrap/dist/css/bootstrap.css';
 
 class ReferralList extends Component {
@@ -12,9 +13,7 @@ class ReferralList extends Component {
     }
     
     componentDidMount() {
-        const apiUrl = '/referral/list';
-        fetch(apiUrl)
-          .then((response) => response.json())
+        referralList()
           .then((data) => 
             this.setState({list: data.data})
           );
